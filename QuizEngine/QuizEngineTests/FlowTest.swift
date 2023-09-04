@@ -6,8 +6,9 @@
 //
 
 import Foundation
-@testable import QuizEngine
 import XCTest
+
+@testable import QuizEngine
 
 class FlowTest: XCTestCase {
 	let router = RouterSpy()
@@ -53,11 +54,40 @@ class FlowTest: XCTestCase {
 
 	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotRouteToAnotherQuestion() {
 		let sut = makeSUT(questions: ["Q1"])
-
 		sut.start()
+
 		router.answerCallback("A1")
 
 		XCTAssertEqual(router.routedQuestions, ["Q1"])
+	}
+
+	func test_start_withNoQuestions_routesToResult() {
+		makeSUT(questions: []).start()
+		XCTAssertEqual(router.routedResult!, [:])
+	}
+
+	func test_startAndAnswerFirstQuestion_withOneQuestion_doesNotRoutesToResult() {
+		makeSUT(questions: ["Q1"]).start()
+		XCTAssertNil(router.routedResult)
+	}
+
+	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotRouteToResult() {
+		let sut = makeSUT(questions: ["Q1", "Q2"])
+		sut.start()
+
+		router.answerCallback("A1")
+
+		XCTAssertNil(router.routedResult)
+	}
+
+	func test_startAndAnswerFirstAndSecondQuestions_withTwoQuestions_routeToResult() {
+		let sut = makeSUT(questions: ["Q1", "Q2"])
+		sut.start()
+
+		router.answerCallback("A1")
+		router.answerCallback("A2")
+
+		XCTAssertEqual(router.routedResult!, ["Q1": "A1", "Q2": "A2"])
 	}
 
 	// MARK: Helpers
@@ -68,11 +98,16 @@ class FlowTest: XCTestCase {
 
 	class RouterSpy: Router {
 		var routedQuestions: [String] = []
+		var routedResult: [String: String]? = nil
 		var answerCallback: ((String) -> Void) = { _ in }
 
 		func routeTo(question: String, answerCallback: @escaping Router.AnswerCallback) {
 			routedQuestions.append(question)
 			self.answerCallback = answerCallback
+		}
+
+		func routeTo(result: [String: String]) {
+			routedResult = result
 		}
 	}
 }
