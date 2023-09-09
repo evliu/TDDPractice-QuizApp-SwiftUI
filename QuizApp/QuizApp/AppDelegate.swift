@@ -17,10 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			print(selected)
 		})
 
+		let resultsViewController = ResultsViewController(summary: "You got 1/2 correct", answers: [
+			PresentableAnswer(question: "Is this an answer?", answer: "Maybe?", wrongAnswer: "Not at all"),
+			PresentableAnswer(question: "Is this an answer? Is this an answer? Is this an answer? Is this an answer? Is this an answer? Is this an answer? ", answer: "Maybe?", wrongAnswer: "Not at all Not at all Not at all Not at all Not at all Not at all Not at all "),
+			PresentableAnswer(question: "Is this a question?", answer: "Of course", wrongAnswer: nil),
+			PresentableAnswer(question: "Is this a question?Is this a question?Is this a question?Is this a question?", answer: "Of course Of course Of course Of course Of course Of course Of course Of course ", wrongAnswer: nil)
+		])
+
 		viewController.loadViewIfNeeded()
 		viewController.tableView.allowsMultipleSelection = false
 
-		window.rootViewController = viewController
+		window.rootViewController = resultsViewController
 
 		self.window = window
 		window.makeKeyAndVisible()
