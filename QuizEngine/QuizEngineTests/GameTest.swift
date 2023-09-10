@@ -43,3 +43,4 @@ final class GameTest: XCTestCase {
 		XCTAssertEqual(router.routedResult!.score, 2)
 	}
 }
+

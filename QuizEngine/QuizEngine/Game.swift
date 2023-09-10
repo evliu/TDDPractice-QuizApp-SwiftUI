@@ -34,5 +34,6 @@ private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question
 			correctCount += 1
 		}
 	}
+
 	return correctCount
 }
