@@ -27,7 +27,7 @@ class Flow<Question: Hashable, Answer, R: Router> where R.Question == Question, 
 		}
 	}
 
-	private func nextCallback(from question: Question) -> R.AnswerCallback {
+	private func nextCallback(from question: Question) -> (Answer) -> Void {
 		return { [weak self] in self?.routeNext(question, $0) }
 	}
 
