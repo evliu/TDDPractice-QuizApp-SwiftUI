@@ -40,17 +40,20 @@ final class NavigationControllerRouterTests: XCTestCase {
 
 	func test_routeToResults_presentsResultsViewController() {
 		let viewController = UIViewController()
-		let result = Result(answers: [Question.singleAnswer("Q1"): ["A1"]], score: 10)
+		let result = Result.make(answers: [Question.singleAnswer("Q1"): ["A1"]], score: 10)
+
 		let secondViewController = UIViewController()
-		let secondResult = Result(answers: [Question.singleAnswer("Q2"): ["A2"]], score: 20)
+		let secondResult = Result.make(answers: [Question.singleAnswer("Q2"): ["A2"]], score: 20)
+
 		factory.stub(result: result, with: viewController)
+		factory.stub(result: secondResult, with: secondViewController)
 
 		sut.routeTo(result: result)
 		sut.routeTo(result: secondResult)
 
 		XCTAssertEqual(navigationController.viewControllers.count, 2)
 		XCTAssertEqual(navigationController.viewControllers.first, viewController)
-		XCTAssertEqual(navigationController.viewControllers.first, secondViewController)
+		XCTAssertEqual(navigationController.viewControllers.last, secondViewController)
 	}
 
 	class ViewControllerFactoryStub: ViewControllerFactory {
@@ -80,20 +83,5 @@ final class NavigationControllerRouterTests: XCTestCase {
 		override func pushViewController(_ viewController: UIViewController, animated: Bool) {
 			super.pushViewController(viewController, animated: false)
 		}
-	}
-}
-
-extension Result: Hashable {
-	init(answers: [Question: Answer], score: Int) {
-		self.answers = answers
-		self.score = score
-	}
-
-	public static func == (lhs: QuizEngine.Result<Question, Answer>, rhs: QuizEngine.Result<Question, Answer>) -> Bool {
-		return lhs.score == rhs.score
-	}
-
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(1)
 	}
 }
