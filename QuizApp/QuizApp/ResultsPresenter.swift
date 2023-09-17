@@ -10,14 +10,18 @@ import UIKit
 
 struct ResultsPresenter {
 	let result: Result<Question<String>, [String]>
+	let questions: [Question<String>]
 	let correctAnswers: [Question<String>: [String]]
 	var summary: String {
 		return "You got \(result.score)/\(result.answers.count) correct"
 	}
 
 	var presentableAnswers: [PresentableAnswer] {
-		return result.answers.map { question, userAnswer in
-			guard let correctAnswer = correctAnswers[question] else {
+		return questions.map { question in
+			guard
+				let userAnswer = result.answers[question],
+				let correctAnswer = correctAnswers[question]
+			else {
 				fatalError("correctAnswer for question: \(question) not found")
 			}
 
