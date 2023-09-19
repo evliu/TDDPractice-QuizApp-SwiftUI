@@ -5,8 +5,8 @@
 //  Created by Everest Liu on 9/5/23.
 //
 
-import UIKit
 import QuizEngine
+import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		let window = UIWindow(frame: UIScreen.main.bounds)
-		let viewController = QuestionViewController(question: "A question?", options: ["Option 1", "Option 2"], selection: { selected in
+		let viewController = QuestionViewController(question: "A question?", options: ["Option 1", "Option 2"], allowsMultipleSelection: false, selection: { selected in
 			print(selected)
 		})
 
