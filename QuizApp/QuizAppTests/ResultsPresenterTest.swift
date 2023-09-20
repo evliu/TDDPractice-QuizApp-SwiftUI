@@ -12,6 +12,13 @@ import XCTest
 final class ResultsPresenterTest: XCTestCase {
 	let singleAnswerQuestion = Question.singleAnswer("Q1")
 	let multipleAnswerQuestion = Question.multipleAnswer("Q2")
+	
+	func test_title_formatsTitle() {
+		let result = Result.make(answers: [:], score: 0) as Result<Question<String>, [String]>
+		let sut = ResultsPresenter(result: result, questions: [], correctAnswers: [:])
+		
+		XCTAssertEqual(sut.title, "Result")
+	}
 
 	func test_summary_withThree_QuestionsScoreTwo_returnsSummary() {
 		let answers = [
