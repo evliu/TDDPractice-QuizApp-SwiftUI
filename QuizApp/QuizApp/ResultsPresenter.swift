@@ -49,6 +49,6 @@ struct ResultsPresenter {
 	}
 
 	private func formattedWrongAnswer(_ userAnswer: [String], _ correctAnswer: [String]) -> String? {
-		return correctAnswer == userAnswer ? nil : userAnswer.joined(separator: ", ")
+		return correctAnswer.sorted() == userAnswer.sorted() ? nil : userAnswer.joined(separator: ", ")
 	}
 }
