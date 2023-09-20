@@ -8,6 +8,7 @@
 import XCTest
 
 @testable import QuizApp
+import QuizEngine
 
 final class QuestionTests: XCTestCase {
 	func test_hashValue_singleAnswer_returnsTypeHash() {
