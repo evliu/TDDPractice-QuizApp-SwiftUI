@@ -22,7 +22,7 @@ public func startGame<Question: Hashable, Answer: Equatable, R: Router>(
 	router: R,
 	correctAnswers: [Question: Answer]
 ) -> Game<Question, Answer, R> where R.Question == Question, R.Answer == Answer {
-	let flow = Flow(questions: questions, router: QuizDelegateToRouterAdapter(router)) { scoring($0, correctAnswers: correctAnswers) }
+	let flow = Flow(questions: questions, delegate: QuizDelegateToRouterAdapter(router)) { scoring($0, correctAnswers: correctAnswers) }
 
 	flow.start()
 
@@ -56,6 +56,20 @@ private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question
 
 	return correctCount
 }
+
+@available(*, deprecated)
+public protocol Router {
+	associatedtype Question: Hashable
+	associatedtype Answer
+
+	func routeTo(question: Question, answerCallback: @escaping (Answer) -> Void)
+	func routeTo(result: Result<Question, Answer>)
+}
+
+/** TODO:
+ 1. add message for deprecated protocol
+ 2. remove Hashable from Question; make Result type Generic
+ */
 
 /**
  1. deprecate startGame function
