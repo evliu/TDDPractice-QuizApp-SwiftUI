@@ -15,8 +15,9 @@ final class ResultsViewControllerTests: XCTestCase {
 	}
 
 	func test_viewDidLoad_withoutAnswers_renderAnswers() {
+		let oneAnswer = makeSUT(answers: [makeAnswer()])
 		XCTAssertEqual(makeSUT(answers: []).tableView.numberOfRows(inSection: 0), 0)
-		XCTAssertEqual(makeSUT(answers: [makeAnswer()]).tableView.numberOfRows(inSection: 0), 1)
+		XCTAssertEqual(oneAnswer.tableView.numberOfRows(inSection: 0), 1)
 	}
 
 	func test_viewDidLoad_withCorrectAnswer_configuredCell() {

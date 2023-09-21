@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	var game: Game<Question<String>, [String], NavigationControllerRouter>?
-
+ 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		let Q1 = Question.singleAnswer("Q1")
 		let Q2 = Question.multipleAnswer("Q2")

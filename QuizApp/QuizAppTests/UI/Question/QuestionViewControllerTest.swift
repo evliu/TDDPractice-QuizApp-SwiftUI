@@ -14,14 +14,17 @@ class QuestionViewControllerTest: XCTestCase {
 	}
 
 	func test_viewDidLoad_renderOptions() {
+		let oneAnswerQVC = makeSUT(options: ["A1"])
+		let twoAnswersQVC = makeSUT(options: ["A1", "A2"])
 		XCTAssertEqual(makeSUT(options: []).tableView.numberOfRows(inSection: 0), 0)
-		XCTAssertEqual(makeSUT(options: ["A1"]).tableView.numberOfRows(inSection: 0), 1)
-		XCTAssertEqual(makeSUT(options: ["A1", "A2"]).tableView.numberOfRows(inSection: 0), 2)
+		XCTAssertEqual(oneAnswerQVC.tableView.numberOfRows(inSection: 0), 1)
+		XCTAssertEqual(twoAnswersQVC.tableView.numberOfRows(inSection: 0), 2)
 	}
 
 	func test_viewDidLoad_withOneOption_rendersOptionsText() {
-		XCTAssertEqual(makeSUT(question: "Q1", options: ["A1", "A2"]).tableView.title(at: 0), "A1")
-		XCTAssertEqual(makeSUT(question: "Q1", options: ["A1", "A2"]).tableView.title(at: 1), "A2")
+		let qVC = makeSUT(question: "Q1", options: ["A1", "A2"])
+		XCTAssertEqual(qVC.tableView.title(at: 0), "A1")
+		XCTAssertEqual(qVC.tableView.title(at: 1), "A2")
 	}
 
 	func test_optionSelected_withSingleSelection_notifiesDelegateWithLastSelection() {
@@ -92,6 +95,7 @@ class QuestionViewControllerTest: XCTestCase {
 		)
 
 		sut.loadViewIfNeeded()
+		_ = sut.view
 		sut.tableView.allowsMultipleSelection = allowsMultipleSelection
 
 		return sut

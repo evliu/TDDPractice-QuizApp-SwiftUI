@@ -28,15 +28,4 @@ public enum Question<T: Hashable>: Hashable {
 				return x.hashValue
 		}
 	}
-
-	public static func ==(lhs: Question<T>, rhs: Question<T>) -> Bool {
-		switch (lhs, rhs) {
-			case (.singleAnswer(let x), .singleAnswer(let y)):
-				return x == y
-			case (.multipleAnswer(let x), .multipleAnswer(let y)):
-				return x == y
-			default:
-				return false
-		}
-	}
 }

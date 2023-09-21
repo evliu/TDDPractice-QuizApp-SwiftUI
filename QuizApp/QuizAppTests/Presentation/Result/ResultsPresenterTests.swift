@@ -12,12 +12,9 @@ import XCTest
 final class ResultsPresenterTest: XCTestCase {
 	let singleAnswerQuestion = Question.singleAnswer("Q1")
 	let multipleAnswerQuestion = Question.multipleAnswer("Q2")
-	
+
 	func test_title_formatsTitle() {
-		let result = Result.make(answers: [:], score: 0) as Result<Question<String>, [String]>
-		let sut = ResultsPresenter(result: result, questions: [], correctAnswers: [:])
-		
-		XCTAssertEqual(sut.title, "Result")
+		XCTAssertEqual(ResultsPresenter(result: .make(), questions: [], correctAnswers: [:]).title, "Result")
 	}
 
 	func test_summary_withThree_QuestionsScoreTwo_returnsSummary() {
@@ -41,13 +38,7 @@ final class ResultsPresenterTest: XCTestCase {
 	}
 
 	func test_presentableAnswers_withNoQuestions_isEmpty() {
-		let sut = ResultsPresenter(
-			result: Result.make(answers: [Question<String>: [String]](), score: 0),
-			questions: [],
-			correctAnswers: [:]
-		)
-
-		XCTAssertTrue(sut.presentableAnswers.isEmpty)
+		XCTAssertTrue(ResultsPresenter(result: .make(), questions: [], correctAnswers: [:]).presentableAnswers.isEmpty)
 	}
 
 	func test_presentableAnswers_withWrongSingleAnswer_mapsAnswer() {
