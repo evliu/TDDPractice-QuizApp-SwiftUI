@@ -7,14 +7,16 @@
 
 import Foundation
 
+@available(*, deprecated)
 public class Game<Question: Hashable, Answer, R: Router> where R.Question == Question, R.Answer == Answer {
-	let flow: Flow<Question, Answer, R>
+	let flow: Flow<R>
 
-	init(flow: Flow<Question, Answer, R>) {
+	init(flow: Flow<R>) {
 		self.flow = flow
 	}
 }
 
+@available(*, deprecated)
 public func startGame<Question: Hashable, Answer: Equatable, R: Router>(
 	questions: [Question],
 	router: R,
@@ -37,3 +39,8 @@ private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question
 
 	return correctCount
 }
+
+/**
+ 1. deprecate startGame function
+ 2. deprecate Game class
+ */
