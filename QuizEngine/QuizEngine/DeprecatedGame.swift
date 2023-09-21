@@ -46,17 +46,6 @@ private class QuizDelegateToRouterAdapter<R: Router>: QuizDelegate {
 	}
 }
 
-private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question: Answer], correctAnswers: [Question: Answer]) -> Int {
-	var correctCount = 0
-	answers.forEach { (key: Question, value: Answer) in
-		if correctAnswers[key] == value {
-			correctCount += 1
-		}
-	}
-
-	return correctCount
-}
-
 @available(*, deprecated)
 public protocol Router {
 	associatedtype Question: Hashable
