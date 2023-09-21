@@ -8,10 +8,10 @@
 import Foundation
 
 @available(*, deprecated)
-public class Game<Question: Hashable, Answer, R: Router> where R.Question == Question, R.Answer == Answer {
-	let flow: Flow<R>
+public class Game<Question: Hashable, Answer, R: Router> {
+	let flow: Any
 
-	init(flow: Flow<R>) {
+	init(flow: Any) {
 		self.flow = flow
 	}
 }
@@ -22,11 +22,28 @@ public func startGame<Question: Hashable, Answer: Equatable, R: Router>(
 	router: R,
 	correctAnswers: [Question: Answer]
 ) -> Game<Question, Answer, R> where R.Question == Question, R.Answer == Answer {
-	let flow = Flow(questions: questions, router: router) { scoring($0, correctAnswers: correctAnswers) }
+	let flow = Flow(questions: questions, router: QuizDelegateToRouterAdapter(router)) { scoring($0, correctAnswers: correctAnswers) }
 
 	flow.start()
 
 	return Game(flow: flow)
+}
+
+@available(*, deprecated)
+private class QuizDelegateToRouterAdapter<R: Router>: QuizDelegate {
+	private let router: R
+
+	init(_ router: R) {
+		self.router = router
+	}
+
+	func handle(result: Result<R.Question, R.Answer>) {
+		router.routeTo(result: result)
+	}
+
+	func handle(question: R.Question, answerCallback: @escaping (R.Answer) -> Void) {
+		router.routeTo(question: question, answerCallback: answerCallback)
+	}
 }
 
 private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question: Answer], correctAnswers: [Question: Answer]) -> Int {
@@ -43,4 +60,5 @@ private func scoring<Question: Hashable, Answer: Equatable>(_ answers: [Question
 /**
  1. deprecate startGame function
  2. deprecate Game class
+ 3. deprecate adapter
  */
