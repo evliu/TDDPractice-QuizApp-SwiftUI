@@ -11,93 +11,93 @@ import XCTest
 @testable import QuizEngine
 
 class FlowTest: XCTestCase {
-	private let router = RouterSpy()
+	private let delegate = DelegateSpy()
 
-	func test_start_withNoQuestions_doesNotRouteToQuestion() {
+	func test_start_withNoQuestions_doesNotDelegateQuestionHandling() {
 		makeSUT(questions: []).start()
-		XCTAssertTrue(router.routedQuestions.isEmpty)
+		XCTAssertTrue(delegate.handledQuestions.isEmpty)
 	}
 
-	func test_start_withOneQuestions_routeToCorrectQuestion() {
+	func test_start_withOneQuestions_delegatesCorrectQuestionHandling() {
 		makeSUT(questions: ["Q1"]).start()
-		XCTAssertEqual(router.routedQuestions, ["Q1"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q1"])
 	}
 
-	func test_start_withOneQuestions_routeToCorrectQuestion_2() {
+	func test_start_withOneQuestions_delegatesAnotherCorrectQuestionHandling() {
 		makeSUT(questions: ["Q2"]).start()
-		XCTAssertEqual(router.routedQuestions, ["Q2"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q2"])
 	}
 
-	func test_start_withTwoQuestions_routesToFirstQuestion() {
+	func test_start_withTwoQuestions_delegatesFirstQuestionHandling() {
 		makeSUT(questions: ["Q1", "Q2"]).start()
-		XCTAssertEqual(router.routedQuestions, ["Q1"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q1"])
 	}
 
-	func test_startTwice_withTwoQuestions_routesToFirstQuestionTwice() {
+	func test_startTwice_withTwoQuestions_delegatesFirstQuestionHandlingTwice() {
 		let sut = makeSUT(questions: ["Q1", "Q2"])
 
 		sut.start()
 		sut.start()
 
-		XCTAssertEqual(router.routedQuestions, ["Q1", "Q1"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q1", "Q1"])
 	}
 
-	func test_startAndAnswerFirstAndSecondQuestion_withThreeQuestions_routesToSecondAndThirdQuestion() {
+	func test_startAndAnswerFirstAndSecondQuestion_withThreeQuestions_delegatesSecondAndThirdQuestionHandling() {
 		let sut = makeSUT(questions: ["Q1", "Q2", "Q3"])
 		sut.start()
 
-		router.answerCallback("A1")
-		router.answerCallback("A2")
+		delegate.answerCallback("A1")
+		delegate.answerCallback("A2")
 
-		XCTAssertEqual(router.routedQuestions, ["Q1", "Q2", "Q3"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q1", "Q2", "Q3"])
 	}
 
-	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotRouteToAnotherQuestion() {
+	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotDelegateAnotherQuestionHandling() {
 		let sut = makeSUT(questions: ["Q1"])
 		sut.start()
 
-		router.answerCallback("A1")
+		delegate.answerCallback("A1")
 
-		XCTAssertEqual(router.routedQuestions, ["Q1"])
+		XCTAssertEqual(delegate.handledQuestions, ["Q1"])
 	}
 
-	func test_start_withNoQuestions_routesToResult() {
+	func delegatesResult() {
 		makeSUT(questions: []).start()
-		XCTAssertEqual(router.routedResult!.answers, [:])
+		XCTAssertEqual(delegate.handledResult!.answers, [:])
 	}
 
-	func test_startAndAnswerFirstQuestion_withOneQuestion_doesNotRoutesToResult() {
+	func test_startAndAnswerFirstQuestion_withOneQuestion_doesNotDelegateResultHandling() {
 		makeSUT(questions: ["Q1"]).start()
-		XCTAssertNil(router.routedResult)
+		XCTAssertNil(delegate.handledResult)
 	}
 
-	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotRouteToResult() {
+	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotDelegateResultHandling() {
 		let sut = makeSUT(questions: ["Q1", "Q2"])
 		sut.start()
 
-		router.answerCallback("A1")
+		delegate.answerCallback("A1")
 
-		XCTAssertNil(router.routedResult)
+		XCTAssertNil(delegate.handledResult)
 	}
 
-	func test_startAndAnswerFirstAndSecondQuestions_withTwoQuestions_routeToResult() {
+	func test_startAndAnswerFirstAndSecondQuestions_withTwoQuestions_delegatesResultHandling() {
 		let sut = makeSUT(questions: ["Q1", "Q2"])
 		sut.start()
 
-		router.answerCallback("A1")
-		router.answerCallback("A2")
+		delegate.answerCallback("A1")
+		delegate.answerCallback("A2")
 
-		XCTAssertEqual(router.routedResult!.answers, ["Q1": "A1", "Q2": "A2"])
+		XCTAssertEqual(delegate.handledResult!.answers, ["Q1": "A1", "Q2": "A2"])
 	}
 
 	func test_startAndAnswerFirstAndSecondQuestions_withTwoQuestions_scores() {
 		let sut = makeSUT(questions: ["Q1", "Q2"], scoring: { _ in 10 })
 		sut.start()
 
-		router.answerCallback("A1")
-		router.answerCallback("A2")
+		delegate.answerCallback("A1")
+		delegate.answerCallback("A2")
 
-		XCTAssertEqual(router.routedResult!.score, 10)
+		XCTAssertEqual(delegate.handledResult!.score, 10)
 	}
 
 	func test_startAndAnswerFirstAndSecondQuestions_withTwoQuestions_scoresWithTheRightAnswers() {
@@ -110,8 +110,8 @@ class FlowTest: XCTestCase {
 
 		sut.start()
 
-		router.answerCallback("A1")
-		router.answerCallback("A2")
+		delegate.answerCallback("A1")
+		delegate.answerCallback("A2")
 
 		XCTAssertEqual(receivedAnswers, ["Q1": "A1", "Q2": "A2"])
 	}
@@ -120,23 +120,31 @@ class FlowTest: XCTestCase {
 
 	private func makeSUT(
 		questions: [String],
-		scoring: @escaping ([String: String]) -> Int = { _ in 0 }) -> Flow<RouterSpy>
+		scoring: @escaping ([String: String]) -> Int = { _ in 0 }) -> Flow<DelegateSpy>
 	{
-		return Flow(questions: questions, router: router, scoring: scoring)
+		return Flow(questions: questions, router: delegate, scoring: scoring)
 	}
 
-	private class RouterSpy: Router {
-		var routedQuestions: [String] = []
-		var routedResult: Result<String, String>? = nil
+	private class DelegateSpy: Router, QuizDelegate {
+		var handledQuestions: [String] = []
+		var handledResult: Result<String, String>? = nil
 		var answerCallback: ((String) -> Void) = { _ in }
 
-		func routeTo(question: String, answerCallback: @escaping (String) -> Void) {
-			routedQuestions.append(question)
+		func handle(question: String, answerCallback: @escaping (String) -> Void) {
+			handledQuestions.append(question)
 			self.answerCallback = answerCallback
 		}
 
+		func routeTo(question: String, answerCallback: @escaping (String) -> Void) {
+			handle(question: question, answerCallback: answerCallback)
+		}
+
+		func handle(result: Result<String, String>) {
+			handledResult = result
+		}
+
 		func routeTo(result: Result<String, String>) {
-			routedResult = result
+			handle(result: result)
 		}
 	}
 }
