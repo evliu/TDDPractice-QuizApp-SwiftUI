@@ -6,10 +6,11 @@
 //
 
 import XCTest
+@testable import QuizApp
 
 final class ScoreTest: XCTestCase {
 	func test_noAnswers_scoresZero() {
-		XCTAssertEqual(BasicScore.score(for: [], comparingTo: []), 0)
+		XCTAssertEqual(BasicScore.score(for: [String](), comparingTo: [String]()), 0)
 	}
 
 	func test_oneNonMatchingAnswer_scoresZero() {
@@ -54,15 +55,5 @@ final class ScoreTest: XCTestCase {
 		)
 
 		XCTAssertEqual(score, 1)
-	}
-
-	private enum BasicScore {
-		static func score(for answers: [String], comparingTo correctAnswers: [String] = []) -> Int {
-			if answers.isEmpty { return 0 }
-
-			return zip(answers, correctAnswers).reduce(0) { score, tuple in
-				score + (tuple.0 == tuple.1 ? 1 : 0)
-			}
-		}
 	}
 }
