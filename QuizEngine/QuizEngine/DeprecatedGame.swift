@@ -7,13 +7,22 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Replaced with QuizDelegate")
+public protocol Router {
+	associatedtype Question: Hashable
+	associatedtype Answer
+
+	func routeTo(question: Question, answerCallback: @escaping (Answer) -> Void)
+	func routeTo(result: Result<Question, Answer>)
+}
+
 @available(*, deprecated)
 public struct Result<Question: Hashable, Answer> {
 	public let answers: [Question: Answer]
 	public let score: Int
 }
 
-@available(*, deprecated)
+@available(*, deprecated, message: "Replaced with Quiz")
 public class Game<Question: Hashable, Answer, R: Router> {
 	let flow: Any
 
@@ -22,7 +31,7 @@ public class Game<Question: Hashable, Answer, R: Router> {
 	}
 }
 
-@available(*, deprecated)
+@available(*, deprecated, message: "Replaced with Quiz.start()")
 public func startGame<Question: Hashable, Answer: Equatable, R: Router>(
 	questions: [Question],
 	router: R,
@@ -35,7 +44,7 @@ public func startGame<Question: Hashable, Answer: Equatable, R: Router>(
 	return Game(flow: flow)
 }
 
-@available(*, deprecated)
+@available(*, deprecated, message: "Removed with deprecated Game types")
 private class QuizDelegateToRouterAdapter<R: Router>: QuizDelegate where R.Answer: Equatable {
 	private let router: R
 	private let correctAnswers: [R.Question: R.Answer]
@@ -67,13 +76,4 @@ private class QuizDelegateToRouterAdapter<R: Router>: QuizDelegate where R.Answe
 			score + (correctAnswers[tuple.key] == tuple.value ? 1 : 0)
 		}
 	}
-}
-
-@available(*, deprecated)
-public protocol Router {
-	associatedtype Question: Hashable
-	associatedtype Answer
-
-	func routeTo(question: Question, answerCallback: @escaping (Answer) -> Void)
-	func routeTo(result: Result<Question, Answer>)
 }
