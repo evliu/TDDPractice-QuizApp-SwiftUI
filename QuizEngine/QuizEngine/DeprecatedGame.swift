@@ -8,6 +8,12 @@
 import Foundation
 
 @available(*, deprecated)
+public struct Result<Question: Hashable, Answer> {
+	public let answers: [Question: Answer]
+	public let score: Int
+}
+
+@available(*, deprecated)
 public class Game<Question: Hashable, Answer, R: Router> {
 	let flow: Any
 
