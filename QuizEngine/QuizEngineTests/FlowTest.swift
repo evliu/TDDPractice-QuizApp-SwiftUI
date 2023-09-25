@@ -44,8 +44,8 @@ class FlowTest: XCTestCase {
 		let sut = makeSUT(questions: ["Q1", "Q2", "Q3"])
 		sut.start()
 
-		delegate.answerCompletion("A1")
-		delegate.answerCompletion("A2")
+		delegate.answerCompletions[0]("A1")
+		delegate.answerCompletions[1]("A2")
 
 		XCTAssertEqual(delegate.questionsAsked, ["Q1", "Q2", "Q3"])
 	}
@@ -54,7 +54,7 @@ class FlowTest: XCTestCase {
 		let sut = makeSUT(questions: ["Q1"])
 		sut.start()
 
-		delegate.answerCompletion("A1")
+		delegate.answerCompletions[0]("A1")
 
 		XCTAssertEqual(delegate.questionsAsked, ["Q1"])
 	}
@@ -72,7 +72,7 @@ class FlowTest: XCTestCase {
 
 	func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotCompleteQuiz() {
 		makeSUT(questions: ["Q1", "Q2"]).start()
-		delegate.answerCompletion("A1")
+		delegate.answerCompletions[0]("A1")
 
 		XCTAssertTrue(delegate.completedQuizzes.isEmpty)
 	}
@@ -80,7 +80,7 @@ class FlowTest: XCTestCase {
 	func test_startAndAnswerFirstQuestion_withOneQuestion_completesQuiz() {
 		let sut = makeSUT(questions: ["Q1"])
 		sut.start()
-		delegate.answerCompletion("A1")
+		delegate.answerCompletions[0]("A1")
 
 		XCTAssertEqual(delegate.completedQuizzes.count, 1)
 	}
@@ -89,11 +89,26 @@ class FlowTest: XCTestCase {
 		let sut = makeSUT(questions: ["Q1", "Q2"])
 		sut.start()
 
-		delegate.answerCompletion("A1")
-		delegate.answerCompletion("A2")
+		delegate.answerCompletions[0]("A1")
+		delegate.answerCompletions[1]("A2")
 
 		XCTAssertEqual(delegate.completedQuizzes.count, 1)
 		assertEqual(delegate.completedQuizzes[0], [("Q1", "A1"), ("Q2", "A2")])
+	}
+
+	func test_startAndAnswerFirstAndSecondQuestionsTwice_withTwoQuestions_completesQuizTwice() {
+		let sut = makeSUT(questions: ["Q1", "Q2"])
+		sut.start()
+
+		delegate.answerCompletions[0]("A1")
+		delegate.answerCompletions[1]("A2")
+
+		delegate.answerCompletions[0]("A1-1")
+		delegate.answerCompletions[1]("A2-2")
+
+		XCTAssertEqual(delegate.completedQuizzes.count, 2)
+		assertEqual(delegate.completedQuizzes[0], [("Q1", "A1"), ("Q2", "A2")])
+		assertEqual(delegate.completedQuizzes[1], [("Q1", "A1-1"), ("Q2", "A2-2")])
 	}
 
 	// MARK: Helpers
@@ -110,21 +125,17 @@ class FlowTest: XCTestCase {
 
 	private class DelegateSpy: QuizDelegate {
 		var questionsAsked: [String] = []
-		var handledResult: Result<String, String>? = nil
+		var answerCompletions: [(String) -> Void] = []
+
 		var completedQuizzes: [[(String, String)]] = []
-		var answerCompletion: ((String) -> Void) = { _ in }
 
 		func answer(for question: String, completion: @escaping (String) -> Void) {
 			questionsAsked.append(question)
-			answerCompletion = completion
+			answerCompletions.append(completion)
 		}
 
 		func didCompleteQuiz(withAnswers answers: [(question: String, answer: String)]) {
 			completedQuizzes.append(answers)
-		}
-
-		func handle(result: Result<String, String>) {
-			handledResult = result
 		}
 	}
 }

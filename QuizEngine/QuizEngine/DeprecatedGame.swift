@@ -39,8 +39,6 @@ private class QuizDelegateToRouterAdapter<R: Router>: QuizDelegate where R.Answe
 		self.correctAnswers = correctAnswers
 	}
 
-	func handle(result: Result<R.Question, R.Answer>) {}
-
 	func didCompleteQuiz(withAnswers answers: [(question: R.Question, answer: R.Answer)]) {
 		let answers = answers.reduce([R.Question: R.Answer]()) { acc, tuple in
 			var acc = acc
@@ -73,14 +71,3 @@ public protocol Router {
 	func routeTo(question: Question, answerCallback: @escaping (Answer) -> Void)
 	func routeTo(result: Result<Question, Answer>)
 }
-
-/** TODO:
- 1. add message for deprecated protocol
- 2. remove Hashable from Question; make Result type Generic
- */
-
-/**
- 1. deprecate startGame function
- 2. deprecate Game class
- 3. deprecate adapter
- */

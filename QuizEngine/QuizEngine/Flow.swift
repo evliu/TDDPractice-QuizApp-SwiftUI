@@ -13,14 +13,11 @@ class Flow<Delegate: QuizDelegate> {
 
 	private let delegate: Delegate
 	private let questions: [Question]
-	private var answers: [Question: Answer] = [:]
-	private var newAnswers: [(Question, Answer)] = []
-	private var scoring: ([Question: Answer]) -> Int
+	private var answers: [(Question, Answer)] = []
 
-	init(questions: [Question], delegate: Delegate, scoring: @escaping ([Question: Answer]) -> Int = { _ in 0 }) {
+	init(questions: [Question], delegate: Delegate) {
 		self.questions = questions
 		self.delegate = delegate
-		self.scoring = scoring
 	}
 
 	func start() {
@@ -32,8 +29,7 @@ class Flow<Delegate: QuizDelegate> {
 			let question = questions[index]
 			delegate.answer(for: question, completion: answer(for: question, at: index))
 		} else {
-			delegate.didCompleteQuiz(withAnswers: newAnswers)
-//			delegate.handle(result: result())
+			delegate.didCompleteQuiz(withAnswers: answers)
 		}
 	}
 
@@ -43,17 +39,18 @@ class Flow<Delegate: QuizDelegate> {
 
 	private func answer(for question: Question, at index: Int) -> (Answer) -> Void {
 		return { [weak self] answer in
-			self?.newAnswers.append((question, answer))
-			self?.answers[question] = answer
+			self?.answers.replaceOrInsert((question, answer), at: index)
 			self?.delegateQuestionHandling(after: index)
 		}
 	}
-
-	private func result() -> Result<Question, Answer> {
-		return Result(answers: answers, score: scoring(answers))
-	}
 }
 
-/**
- 1. remove leaky scoring implementation
- */
+private extension Array {
+	mutating func replaceOrInsert(_ element: Element, at index: Index) {
+		if index < count {
+			remove(at: index)
+		}
+
+		insert(element, at: index)
+	}
+}
