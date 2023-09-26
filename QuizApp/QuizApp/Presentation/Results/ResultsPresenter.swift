@@ -21,6 +21,12 @@ final class ResultsPresenter {
 	var summary: String { "You got \(score)/\(userAnswers.count) correct" }
 	var title: String { "Result" }
 
+	init(userAnswers: Answers, correctAnswers: Answers, scorer: @escaping Scorer) {
+		self.userAnswers = userAnswers
+		self.correctAnswers = correctAnswers
+		self.scorer = scorer
+	}
+
 	init(result: Result<Question<String>, [String]>, questions: [Question<String>], correctAnswers: [Question<String>: [String]]) {
 		self.userAnswers = questions.map { (question: $0, answers: result.answers[$0]!) }
 
