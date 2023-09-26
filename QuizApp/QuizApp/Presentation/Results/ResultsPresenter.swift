@@ -27,13 +27,6 @@ final class ResultsPresenter {
 		self.scorer = scorer
 	}
 
-	init(result: Result<Question<String>, [String]>, questions: [Question<String>], correctAnswers: [Question<String>: [String]]) {
-		self.userAnswers = questions.map { (question: $0, answers: result.answers[$0]!) }
-
-		self.correctAnswers = questions.filter { question in correctAnswers.keys.contains { q in q == question }}.map { (question: $0, answers: correctAnswers[$0]!) }
-		self.scorer = { _, _ in result.score }
-	}
-
 	var presentableAnswers: [PresentableAnswer] {
 		return zip(userAnswers, correctAnswers).map { userAnswer, correctAnswer in
 			presentableAnswer(userAnswer.question, userAnswer.answers, correctAnswer.answers)
