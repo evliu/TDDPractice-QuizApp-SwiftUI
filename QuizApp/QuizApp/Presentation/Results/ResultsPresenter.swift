@@ -9,14 +9,14 @@ import QuizEngine
 import UIKit
 
 final class ResultsPresenter {
-	typealias Answers = [(question: Question<String>, answers: [String])]
+	typealias Answers = [(question: Question<String>, answer: [String])]
 	typealias Scorer = ([[String]], [[String]]) -> Int
 
 	private let userAnswers: Answers
 	private let correctAnswers: Answers
 	private let scorer: Scorer
 
-	private var score: Int { scorer(userAnswers.map { $0.answers }, correctAnswers.map { $0.answers }) }
+	private var score: Int { scorer(userAnswers.map { $0.answer }, correctAnswers.map { $0.answer }) }
 
 	var summary: String { "You got \(score)/\(userAnswers.count) correct" }
 	var title: String { "Result" }
@@ -29,7 +29,7 @@ final class ResultsPresenter {
 
 	var presentableAnswers: [PresentableAnswer] {
 		return zip(userAnswers, correctAnswers).map { userAnswer, correctAnswer in
-			presentableAnswer(userAnswer.question, userAnswer.answers, correctAnswer.answers)
+			presentableAnswer(userAnswer.question, userAnswer.answer, correctAnswer.answer)
 		}
 	}
 
