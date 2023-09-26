@@ -8,23 +8,29 @@
 import QuizEngine
 import UIKit
 
-struct ResultsPresenter {
-	let result: Result<Question<String>, [String]>
-	let questions: [Question<String>]
-	let correctAnswers: [Question<String>: [String]]
-	var summary: String { "You got \(result.score)/\(result.answers.count) correct" }
+final class ResultsPresenter {
+	typealias Answers = [(question: Question<String>, answers: [String])]
+	typealias Scorer = ([[String]], [[String]]) -> Int
+
+	private let userAnswers: Answers
+	private let correctAnswers: Answers
+	private let scorer: Scorer
+
+	private var score: Int { scorer(userAnswers.map { $0.answers }, correctAnswers.map { $0.answers }) }
+
+	var summary: String { "You got \(score)/\(userAnswers.count) correct" }
 	var title: String { "Result" }
 
-	var presentableAnswers: [PresentableAnswer] {
-		return questions.map { question in
-			guard
-				let userAnswer = result.answers[question],
-				let correctAnswer = correctAnswers[question]
-			else {
-				fatalError("correctAnswer for question: \(question) not found")
-			}
+	init(result: Result<Question<String>, [String]>, questions: [Question<String>], correctAnswers: [Question<String>: [String]]) {
+		self.userAnswers = questions.map { (question: $0, answers: result.answers[$0]!) }
 
-			return presentableAnswer(question, userAnswer, correctAnswer)
+		self.correctAnswers = questions.filter { question in correctAnswers.keys.contains { q in q == question }}.map { (question: $0, answers: correctAnswers[$0]!) }
+		self.scorer = { _, _ in result.score }
+	}
+
+	var presentableAnswers: [PresentableAnswer] {
+		return zip(userAnswers, correctAnswers).map { userAnswer, correctAnswer in
+			presentableAnswer(userAnswer.question, userAnswer.answers, correctAnswer.answers)
 		}
 	}
 
