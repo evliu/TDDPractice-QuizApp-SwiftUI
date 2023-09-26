@@ -10,15 +10,6 @@ import QuizEngine
 import XCTest
 
 final class NavigationControllerRouterTests: XCTestCase {
-	let navigationController = NonAnimatingNavigationViewController()
-	let factory = ViewControllerFactoryStub()
-
-	let singleAnswerQuestion1 = Question.singleAnswer("Q1")
-	let singleAnswerQuestion2 = Question.singleAnswer("Q2")
-	let multipleAnswerQuestion1 = Question.multipleAnswer("Q1z")
-
-	lazy var sut: NavigationControllerRouter = .init(self.navigationController, factory: self.factory)
-
 	func test_answerForQuestions_presentsQuestionViewController() {
 		let viewController = UIViewController()
 		let secondViewController = UIViewController()
@@ -96,7 +87,7 @@ final class NavigationControllerRouterTests: XCTestCase {
 		XCTAssertTrue(isAnswerCallbackFired)
 	}
 
-	func test_routeToResults_presentsResultsViewController() {
+	func test_didCompleteQuiz_presentsResultsViewController() {
 		let viewController = UIViewController()
 		let userAnswers = [(singleAnswerQuestion1, ["A1"])]
 
@@ -116,7 +107,16 @@ final class NavigationControllerRouterTests: XCTestCase {
 
 	// MARK: Helpers
 
-	class ViewControllerFactoryStub: ViewControllerFactory {
+	private let navigationController = NonAnimatingNavigationViewController()
+	private let factory = ViewControllerFactoryStub()
+
+	private let singleAnswerQuestion1 = Question.singleAnswer("Q1")
+	private let singleAnswerQuestion2 = Question.singleAnswer("Q2")
+	private let multipleAnswerQuestion1 = Question.multipleAnswer("Q1z")
+
+	private lazy var sut: NavigationControllerRouter = .init(self.navigationController, factory: self.factory)
+
+	private class ViewControllerFactoryStub: ViewControllerFactory {
 		private var stubbedQuestions = [Question<String>: UIViewController]()
 		private var stubbedResults = [[Question<String>]: UIViewController]()
 		var answerCallbacks = [Question<String>: ([String]) -> Void]()
@@ -124,10 +124,6 @@ final class NavigationControllerRouterTests: XCTestCase {
 		func questionViewController(for question: Question<String>, answerCallback: @escaping ([String]) -> Void) -> UIViewController {
 			answerCallbacks[question] = answerCallback
 			return stubbedQuestions[question] ?? UIViewController()
-		}
-
-		func resultsViewController(for result: Result<Question<String>, [String]>) -> UIViewController {
-			return UIViewController()
 		}
 
 		func resultsViewController(for userAnswers: Answers) -> UIViewController {
@@ -143,7 +139,7 @@ final class NavigationControllerRouterTests: XCTestCase {
 		}
 	}
 
-	class NonAnimatingNavigationViewController: UINavigationController {
+	private class NonAnimatingNavigationViewController: UINavigationController {
 		override func pushViewController(_ viewController: UIViewController, animated: Bool) {
 			super.pushViewController(viewController, animated: false)
 		}
