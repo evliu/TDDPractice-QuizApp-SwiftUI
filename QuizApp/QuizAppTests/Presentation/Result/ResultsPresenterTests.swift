@@ -95,8 +95,6 @@ final class ResultsPresenterTest: XCTestCase {
 			]
 		)
 
-		let orderedQuestions = [Question.multipleAnswer("Q1"), multipleAnswerQuestion]
-
 		XCTAssertEqual(sut.presentableAnswers.count, 2)
 
 		XCTAssertEqual(sut.presentableAnswers.first!.question, "Q2")

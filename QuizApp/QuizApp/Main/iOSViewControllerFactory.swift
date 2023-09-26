@@ -9,14 +9,26 @@ import QuizEngine
 import UIKit
 
 class iOSViewControllerFactory: ViewControllerFactory {
+	typealias Answers = [(question: Question<String>, answers: [String])]
+
 	private let questions: [Question<String>]
 	private let options: [Question<String>: [String]]
-	private let correctAnswers: [Question<String>: [String]]
+	private let correctAnswers: () -> Answers
+
+	init(options: [Question<String>: [String]], correctAnswers: Answers) {
+		self.questions = correctAnswers.map { $0.question }
+		self.options = options
+		self.correctAnswers = { correctAnswers }
+	}
 
 	init(questions: [Question<String>], options: [Question<String>: [String]], correctAnswers: [Question<String>: [String]]) {
 		self.questions = questions
 		self.options = options
-		self.correctAnswers = correctAnswers
+		self.correctAnswers = {
+			questions
+				.filter { question in correctAnswers.keys.contains { q in q == question }}
+				.map { (question: $0, answers: correctAnswers[$0]!) }
+		}
 	}
 
 	func questionViewController(for question: Question<String>, answerCallback: @escaping ([String]) -> Void) -> UIViewController {
@@ -45,12 +57,23 @@ class iOSViewControllerFactory: ViewControllerFactory {
 		return controller
 	}
 
+	func resultsViewController(for userAnswers: Answers) -> UIViewController {
+		let presenter = ResultsPresenter(
+			userAnswers: userAnswers,
+			correctAnswers: correctAnswers(),
+			scorer: BasicScore.score
+		)
+
+		let controller = ResultsViewController(summary: presenter.summary, answers: presenter.presentableAnswers)
+		controller.title = presenter.title
+
+		return controller
+	}
+
 	func resultsViewController(for result: Result<Question<String>, [String]>) -> UIViewController {
 		let presenter = ResultsPresenter(
 			userAnswers: questions.map { (question: $0, answers: result.answers[$0]!) },
-			correctAnswers: questions
-				.filter { question in correctAnswers.keys.contains { q in q == question }}
-				.map { (question: $0, answers: correctAnswers[$0]!) },
+			correctAnswers: correctAnswers(),
 			scorer: { _, _ in result.score }
 		)
 
