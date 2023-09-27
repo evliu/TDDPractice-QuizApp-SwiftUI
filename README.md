@@ -1,4 +1,4 @@
-[![CI Build and Test](https://github.com/evliu/TDDPractice-QuizApp/actions/workflows/swift.yml/badge.svg)](https://github.com/evliu/TDDPractice-QuizApp/actions/workflows/swift.yml)
+[![Build and Test](https://github.com/evliu/TDDPractice-QuizApp-SwiftUI/actions/workflows/ci.yml/badge.svg)](https://github.com/evliu/TDDPractice-QuizApp-SwiftUI/actions/workflows/ci.yml)
 
 # TDD Practice
 This repo contains practice code for a Quiz app that utilizes a quiz engine based on tutorials. The engine was implemented first by adding failing tests, then making the tests pass by implementing the code.
