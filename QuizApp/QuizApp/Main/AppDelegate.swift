@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let correctAnswers = [(Q1, ["A2"]), (Q2, ["Right", "Correct"])]
 
 		let navigationController = UINavigationController()
-		let factory = iOSViewControllerFactory(options: options, correctAnswers: correctAnswers)
+		let factory = iOSSwiftUIViewControllerFactory(options: options, correctAnswers: correctAnswers)
 		let router = NavigationControllerRouter(navigationController, factory: factory)
 
 		let window = UIWindow(frame: UIScreen.main.bounds)

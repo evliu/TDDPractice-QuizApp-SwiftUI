@@ -1,5 +1,5 @@
 //
-//  iOSViewControllerFactoryTest.swift
+//  iOSUIKitViewControllerFactoryTest.swift
 //  QuizAppTests
 //
 //  Created by Everest Liu on 9/15/23.
@@ -9,7 +9,7 @@
 import QuizEngine
 import XCTest
 
-final class iOSViewControllerFactoryTest: XCTestCase {
+final class iOSUIKitViewControllerFactoryTest: XCTestCase {
 	let options = ["A1", "A2"]
 	let singleAnswerQuestion = Question.singleAnswer("Q1")
 	let multipleAnswerQuestion = Question.multipleAnswer("Q2")
@@ -68,8 +68,8 @@ final class iOSViewControllerFactoryTest: XCTestCase {
 	func makeSUT(
 		options: [Question<String>: [String]] = [:],
 		correctAnswers: [(Question<String>, [String])] = []
-	) -> iOSViewControllerFactory {
-		return iOSViewControllerFactory(options: options, correctAnswers: correctAnswers)
+	) -> iOSUIKitViewControllerFactory {
+		return iOSUIKitViewControllerFactory(options: options, correctAnswers: correctAnswers)
 	}
 
 	func makeQuestionViewController(question: Question<String> = Question.singleAnswer("")) -> QuestionViewController {
