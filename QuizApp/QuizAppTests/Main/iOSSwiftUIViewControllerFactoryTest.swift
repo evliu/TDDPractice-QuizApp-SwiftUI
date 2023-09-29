@@ -15,7 +15,7 @@ final class iOSSwiftUIViewControllerFactoryTest: XCTestCase {
 	let multipleAnswerQuestion = Question.multipleAnswer("Q2")
 
 	func test_questionViewController_singleAnswer_createsViewControllerWithTitle() throws {
-		let presenter = QuestionPresenter(currentQuestion: singleAnswerQuestion, questions: [singleAnswerQuestion])
+		let presenter = QuestionPresenter(currentQuestion: singleAnswerQuestion, questions: [singleAnswerQuestion, multipleAnswerQuestion])
 		let view = try XCTUnwrap(makeSingleAnswerQuestion())
 
 		XCTAssertEqual(view.title, presenter.title)

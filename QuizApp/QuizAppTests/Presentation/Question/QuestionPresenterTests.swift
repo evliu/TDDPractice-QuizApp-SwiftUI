@@ -19,18 +19,18 @@ final class QuestionPresenterTests: XCTestCase {
 	func test_title_forQuestion() {
 		let sut = QuestionPresenter(currentQuestion: questions[0], questions: [questions[0]])
 
-		XCTAssertEqual(sut.title, "Question #1")
+		XCTAssertEqual(sut.title, "Question #1 of 1")
 	}
 
 	func test_title_forQuestions() {
 		var sut = QuestionPresenter(currentQuestion: questions[0], questions: questions)
-		XCTAssertEqual(sut.title, "Question #1")
+		XCTAssertEqual(sut.title, "Question #1 of 3")
 
 		sut = QuestionPresenter(currentQuestion: questions[1], questions: questions)
-		XCTAssertEqual(sut.title, "Question #2")
+		XCTAssertEqual(sut.title, "Question #2 of 3")
 
 		sut = QuestionPresenter(currentQuestion: questions[2], questions: questions)
-		XCTAssertEqual(sut.title, "Question #3")
+		XCTAssertEqual(sut.title, "Question #3 of 3")
 	}
 
 	func test_title_isEmpty() {
