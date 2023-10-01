@@ -1,5 +1,5 @@
 //
-//  SingleAnswerQuestion.swift
+//  SingleAnswerQuestionView.swift
 //  QuizApp
 //
 //  Created by Everest Liu on 9/28/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SingleAnswerQuestion: View {
+struct SingleAnswerQuestionView: View {
 	let title: String
 	let question: String
 	let options: [String]
@@ -34,11 +34,11 @@ struct SingleAnswerQuestion: View {
 }
 
 struct SingleAnswerQuestionTestView: View {
-	@State var selected: String = "none "
+	@State var selected: String = "none"
 
 	var body: some View {
 		VStack {
-			SingleAnswerQuestion(
+			SingleAnswerQuestionView(
 				title: "1 of 2",
 				question: "Question 1?",
 				options: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
